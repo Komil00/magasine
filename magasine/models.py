@@ -18,6 +18,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     image = models.ImageField(upload_to='media', blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
+    productquantity = models.PositiveIntegerField()
     FOOT_CHOICES = (
         ("mans", "mans"),
         ("vomens", "womens"),
@@ -41,7 +42,7 @@ class UserFavoriteProduct(models.Model):
 class OrderProduct(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
-    quantity = models.FloatField(blank=True, null=True)
+    quantity = models.PositiveIntegerField()
 
     def __str__(self):
         return self.product.modelname
