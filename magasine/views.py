@@ -93,14 +93,12 @@ class UserFavoriteProductViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = UserFavoriteProduct.objects.all()
     http_allowed_methods = ['get', 'post', 'put', 'delete']
+    serializer_class = UserFavoriteProductPostSerializers
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return UserFavoriteProduct.objects.all()
-        return UserFavoriteProduct.objects.filter(author=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+            return self.queryset
+        return self.queryset.filter(author=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ['list']:
