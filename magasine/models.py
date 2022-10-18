@@ -14,10 +14,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    modelname = models.CharField(max_length=50, blank=True, null=False)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=False)
-    image = models.ImageField(upload_to='media', blank=True, null=False)
-    price = models.FloatField(blank=True, null=True)
+    modelname = models.CharField(max_length=50)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='')
+    price = models.FloatField()
     productquantity = models.PositiveIntegerField()
     FOOT_CHOICES = (
         ("mans", "mans"),
@@ -32,8 +32,8 @@ class Product(models.Model):
 
 
 class OrderProduct(models.Model):
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=False)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=False)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
