@@ -75,11 +75,8 @@ class OrderProductViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return OrderProduct.objects.all()
+            return self.queryset
         return OrderProduct.objects.filter(author=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ['list']:
