@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, OrderProduct, Category
+from .models import Product, OrderProduct, Category, UserFavoriteProduct
 from customuser.serializers import CustomUserSerializers, CustomUserListSerializer
 
 
@@ -14,17 +14,31 @@ class ProductListSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['modelname', 'category', 'image', 'price', 'productquantity', 'mode']
+        fields = ['id', 'modelname', 'category', 'image', 'price', 'productquantity', 'mode']
+
+
+# class OrderProductListSerializers(serializers.ModelSerializer):
+#     user = CustomUserListSerializer(read_only=True)
+#     product = ProductListSerializers(read_only=True)
+#     quantity = serializers.FloatField(read_only=True)
+#
+#     class Meta:
+#         model = OrderProduct
+#         fields = ['user', 'product', 'quantity']
+
+
+# class OrderProductPutSerializers(serializers.ModelSerializer):
+#     quantity = serializers.FloatField()
+#
+#     class Meta:
+#         model = OrderProduct
+#         fields = ['quantity']
 
 
 class OrderProductListSerializers(serializers.ModelSerializer):
-    user = CustomUserListSerializer(read_only=True)
-    product = ProductListSerializers(read_only=True)
-    quantity = serializers.FloatField(read_only=True)
-
     class Meta:
         model = OrderProduct
-        fields = ['user', 'product', 'quantity']
+        fields = ['id', 'author', 'product', 'quantity']
 
 
 class OrderProductPutSerializers(serializers.ModelSerializer):
@@ -32,4 +46,19 @@ class OrderProductPutSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = OrderProduct
-        fields = ['quantity']
+        fields = ['id', 'quantity']
+
+
+class UserFavoriteProductListSerializers(serializers.ModelSerializer):
+    author = CustomUserListSerializer(read_only=True)
+    product = ProductListSerializers(read_only=True)
+
+    class Meta:
+        model = UserFavoriteProduct
+        fields = ['id', 'author', 'product']
+
+
+class UserFavoriteProductPostSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = UserFavoriteProduct
+        fields = ['id', 'author', 'product']
