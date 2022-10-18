@@ -36,6 +36,17 @@ class ProductListSerializers(serializers.ModelSerializer):
 
 
 class OrderProductListSerializers(serializers.ModelSerializer):
+    author = CustomUserListSerializer(read_only=True)
+    product = ProductListSerializers(read_only=True)
+
+    class Meta:
+        model = OrderProduct
+        fields = ['id', 'author', 'product', 'quantity']
+
+
+class OrderProductPostSerializers(serializers.ModelSerializer):
+    quantity = serializers.FloatField()
+
     class Meta:
         model = OrderProduct
         fields = ['id', 'author', 'product', 'quantity']

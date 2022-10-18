@@ -10,7 +10,8 @@ from magasine.models import Product, OrderProduct, Category, UserFavoriteProduct
 from .serializers import (
     ProductListSerializers,
     OrderProductListSerializers,
-    OrderProductPutSerializers, UserFavoriteProductListSerializers, UserFavoriteProductPostSerializers
+    OrderProductPutSerializers, UserFavoriteProductListSerializers, UserFavoriteProductPostSerializers,
+    OrderProductPostSerializers
 )
 from rest_framework.viewsets import ViewSet, ModelViewSet
 
@@ -18,12 +19,10 @@ from rest_framework.viewsets import ViewSet, ModelViewSet
 # Create your views here.
 
 class ProductViewSet(ViewSet):
-    queryset = Product.product.all()
-    filter_backends = [SearchFilter]
-    search_fields = ['category', 'modelname']
+    queryset = Product.objects.all()
 
     def list(self, request):
-        queryset = Product.product.all()
+        queryset = Product.objects.all()
         serializer = ProductListSerializers(queryset, many=True)
         return Response(serializer.data)
 
@@ -83,8 +82,10 @@ class OrderProductViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
-        if self.action in ['list', 'create']:
+        if self.action in ['list']:
             return OrderProductListSerializers
+        if self.action in ['create']:
+            return OrderProductPostSerializers
         return OrderProductPutSerializers
 
 

@@ -28,8 +28,6 @@ class Product(models.Model):
     def __str__(self):
         return self.modelname
 
-    product = models.Manager()
-
 
 class UserFavoriteProduct(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
