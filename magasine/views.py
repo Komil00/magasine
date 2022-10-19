@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -71,6 +72,9 @@ class ProductViewSet(ViewSet):
 class OrderProductViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = OrderProduct.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['modelname']
+    authentication_classes = [SessionAuthentication]
     http_allowed_methods = ['get', 'post', 'put', 'delete']
 
     def get_queryset(self):
@@ -89,6 +93,9 @@ class OrderProductViewSet(ModelViewSet):
 class UserFavoriteProductViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = UserFavoriteProduct.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['modelname']
+    authentication_classes = [SessionAuthentication]
     http_allowed_methods = ['get', 'post', 'put', 'delete']
     serializer_class = UserFavoriteProductPostSerializers
 
