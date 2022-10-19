@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -37,6 +39,9 @@ class UsersViewCreate(generics.CreateAPIView):
 
 class UsersViewList(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ['email']
+    search_fields = ['email', 'username']
     permission_classes = [IsAdminUser]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializers
