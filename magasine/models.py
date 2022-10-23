@@ -1,3 +1,5 @@
+from django.db.models import F
+
 from customuser.models import CustomUser
 from django.db import models
 from django.db.models.signals import post_save
