@@ -81,13 +81,16 @@ class OrderProductViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = OrderProductPostSerializers(data=request.data)
         product = Product.objects.get(id=request.data['product'])
-        if product.productquantity < int(request.data['quantity']):
-            return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
-        serializer.is_valid(raise_exception=True)
-        product.productquantity -= int(request.data['quantity'])
-        product.save()
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            if product.productquantity < int(request.data['quantity']):
+                return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            product.productquantity -= int(request.data['quantity'])
+            product.save()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValueError:
+            return Response("iltimos butun son kiriting")
 
     def get_queryset(self):
         if self.request.user.is_superuser:
