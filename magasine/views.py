@@ -117,7 +117,7 @@ class UserFavoriteProductViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return self.queryset
+            return self.queryset.filter(author=self.request.user)
         return self.queryset.filter(author=self.request.user)
 
     def get_serializer_class(self):
