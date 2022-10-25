@@ -94,7 +94,7 @@ class OrderProductViewSet(ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         serializer = OrderProductPutSerializers(data=request.data)
-        # print(serializer.is_valid())
+        print(serializer.is_valid())
         set_order = set()
         try:
             order = get_object_or_404(self.queryset, pk=pk)
@@ -113,7 +113,12 @@ class OrderProductViewSet(ModelViewSet):
             prod.save()
         ord.quantity = serializer.validated_data['quantity']
         ord.save()
+        # order.product = serializer.validated_data['product']
+        # order.author = serializer.validated_data['author']
+        # order.quantity = serializer.validated_data['quantity']
+        # order.save()
         return Response({"success": 'ss'})
+
 
         # # print(serializer.is_valid())
         # # product = Product.objects.get(id=2)

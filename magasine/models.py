@@ -37,7 +37,7 @@ class OrderProduct(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    total = models.IntegerField()
+    # total = models.IntegerField()
 
     def __str__(self):
         return self.product.modelname
