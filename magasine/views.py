@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
@@ -92,9 +92,52 @@ class OrderProductViewSet(ModelViewSet):
         except ValueError:
             return Response("iltimos butun son kiriting")
 
+    def update(self, request, pk=None, *args, **kwargs):
+        serializer = OrderProductPutSerializers(data=request.data)
+        # print(serializer.is_valid())
+        set_order = set()
+        try:
+            order = get_object_or_404(self.queryset, pk=pk)
+            set_order.add(order)
+        except OrderProduct.DoesNotExist:
+            return Response({"error": 'order does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        prod = None
+        ord = set_order.pop()
+        if order.product:
+            prod = ord.product
+        if serializer.validated_data['quantity'] > ord.quantity:
+            prod.productquantity -= int(serializer.validated_data['quantity'] - ord.quantity)
+            prod.save()
+        if serializer.validated_data['quantity'] < ord.quantity:
+            prod.productquantity += int(ord.quantity - serializer.validated_data['quantity'])
+            prod.save()
+        ord.quantity = serializer.validated_data['quantity']
+        ord.save()
+        return Response({"success": 'ss'})
+
+        # # print(serializer.is_valid())
+        # # product = Product.objects.get(id=2)
+        # # orderproduct = OrderProduct.objects.get(id=40)
+        # # print(dir(**kwargs))
+        # # try:
+        # #     serializer.is_valid(raise_exception=True)
+        # #     product.productquantity += orderproduct.quantity
+        # #     orderproduct.quantity -= orderproduct.quantity
+        # #     orderproduct.save()
+        # #     product.save()
+        # #     if product.productquantity < int(request.data['quantity']):
+        # #         return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+        # #     product.productquantity -= int(request.data['quantity'])
+        # #     # serializer = OrderProductPutSerializers(request.user, data=request.data, partial=True)
+        # #     orderproduct.quantity = request.data['quantity']
+        # #     orderproduct.save()
+        # #     product.save()
+        # #     serializer.save()
+        # #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # except ValueError:
+        #     return Response("iltimos butun son kiriting")
+
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return self.queryset
         return OrderProduct.objects.filter(author=self.request.user)
 
     def get_serializer_class(self):
