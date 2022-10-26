@@ -81,6 +81,7 @@ class OrderProductViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = OrderProductPostSerializers(data=request.data)
         product = Product.objects.get(id=request.data['product'])
+        orderproduct = Product.objects.get(id=request.data['product'])
         try:
             if product.productquantity < int(request.data['quantity']):
                 return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
@@ -117,8 +118,7 @@ class OrderProductViewSet(ModelViewSet):
         # order.author = serializer.validated_data['author']
         # order.quantity = serializer.validated_data['quantity']
         # order.save()
-        return Response({"success": 'ss'})
-
+        return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
 
         # # print(serializer.is_valid())
         # # product = Product.objects.get(id=2)
