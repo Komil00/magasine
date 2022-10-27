@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
-from magasine.models import Product, OrderProduct, Category, UserFavoriteProduct
+from magasine.models import OrderProduct, UserFavoriteProduct, Product
 from .serializers import (
     ProductListSerializers,
     OrderProductListSerializers,
@@ -28,47 +28,6 @@ class ProductViewSet(ViewSet):
         return Response(serializer.data)
 
 
-# class OrderProductViewSet(ModelViewSet):
-#     permission_classes = [IsAuthenticated]
-#     queryset = OrderProduct.objects.all()
-#
-#     def get_serializer_class(self):
-#         if self.action in ['list']:
-#             return OrderProductListSerializers
-#         else:
-#             return OrderProductPutSerializers
-
-# def get_serializer_class(self):
-#     if self.request.method == 'GET':
-#         return OrderProductListSerializers
-#     if self.request.method == 'PUT':
-#         return OrderProductPutSerializers
-# def list(self, request):
-#     queryset = OrderProduct.objects.all()
-#     serializer = OrderProductListSerializers(queryset, many=True)
-#     return Response(serializer.data)
-#
-# def update(self, request, *args, **kwargs):
-#     serializer = OrderProductPutSerializers(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#
-#     return Response(serializer.data)
-
-# def create(self, request, *args, **kwargs):
-#     serializer = OrderProductPutSerializers(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#     return Response(serializer.data, status=status.HTTP_201_CREATED)
-# def get_serializer_class(self):
-#     if self.action == 'list':
-#         return OrderProductListSerializers
-#     if self.action == 'retrieve':
-#         return OrderProductPutSerializers
-# @action(detail=True, methods=['put'])
-# def update_quantity(self, request):
-#     queryset = OrderProduct.objects.create()
-#     serializer = OrderProductPutSerializers(queryset, many=True)
-#     return Response(serializer.data)
-
 class OrderProductViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = OrderProduct.objects.all()
@@ -82,7 +41,8 @@ class OrderProductViewSet(ModelViewSet):
         serializer = OrderProductPostSerializers(data=request.data)
         product = Product.objects.get(id=request.data['product'])
         orderproduct = Product.objects.get(id=request.data['product'])
-        try:
+
+        if int(self.request.data['quantity']) > 0:
             if product.productquantity < int(request.data['quantity']):
                 return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
             serializer.is_valid(raise_exception=True)
@@ -90,8 +50,8 @@ class OrderProductViewSet(ModelViewSet):
             product.save()
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValueError:
-            return Response("iltimos butun son kiriting")
+        else:
+            return Response('mahsulot sonini xato kiritdingiz!')
 
     def update(self, request, pk=None, *args, **kwargs):
         serializer = OrderProductPutSerializers(data=request.data)
@@ -114,33 +74,7 @@ class OrderProductViewSet(ModelViewSet):
             prod.save()
         ord.quantity = serializer.validated_data['quantity']
         ord.save()
-        # order.product = serializer.validated_data['product']
-        # order.author = serializer.validated_data['author']
-        # order.quantity = serializer.validated_data['quantity']
-        # order.save()
         return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
-
-        # # print(serializer.is_valid())
-        # # product = Product.objects.get(id=2)
-        # # orderproduct = OrderProduct.objects.get(id=40)
-        # # print(dir(**kwargs))
-        # # try:
-        # #     serializer.is_valid(raise_exception=True)
-        # #     product.productquantity += orderproduct.quantity
-        # #     orderproduct.quantity -= orderproduct.quantity
-        # #     orderproduct.save()
-        # #     product.save()
-        # #     if product.productquantity < int(request.data['quantity']):
-        # #         return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
-        # #     product.productquantity -= int(request.data['quantity'])
-        # #     # serializer = OrderProductPutSerializers(request.user, data=request.data, partial=True)
-        # #     orderproduct.quantity = request.data['quantity']
-        # #     orderproduct.save()
-        # #     product.save()
-        # #     serializer.save()
-        # #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # except ValueError:
-        #     return Response("iltimos butun son kiriting")
 
     def get_queryset(self):
         return OrderProduct.objects.filter(author=self.request.user)
