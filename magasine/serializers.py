@@ -60,7 +60,10 @@ class OrderProductPostSerializers(serializers.ModelSerializer):
 
 
 class OrderProductPutSerializers(serializers.ModelSerializer):
-    quantity = serializers.FloatField()
+    def validate_quantity(self, value):
+        if value < 1:
+            raise ValidationError("quantity 0 dan kop bolishi kerak")
+        return value
 
     class Meta:
         model = OrderProduct

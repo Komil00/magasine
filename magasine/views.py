@@ -37,40 +37,39 @@ class OrderProductViewSet(ModelViewSet):
     authentication_classes = [SessionAuthentication]
     http_allowed_methods = ['get', 'post', 'put', 'delete']
 
-    def create(self, request, *args, **kwargs):
-        serializer = OrderProductPostSerializers(data=request.data)
-        product = Product.objects.get(id=request.data['product'])
-        orderproduct = Product.objects.get(id=request.data['product'])
-        if product.productquantity < int(request.data['quantity']):
-            return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
-        serializer.is_valid(raise_exception=True)
-        product.productquantity -= int(request.data['quantity'])
-        product.save()
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # def create(self, request, *args, **kwargs):
+    #     serializer = OrderProductPostSerializers(data=request.data)
+    #     product = Product.objects.get(id=request.data['product'])
+    #     orderproduct = Product.objects.get(id=request.data['product'])
+    #     if product.productquantity < int(request.data['quantity']):
+    #         return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+    #     serializer.is_valid(raise_exception=True)
+    #     product.productquantity -= int(request.data['quantity'])
+    #     product.save()
+    #     serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None, *args, **kwargs):
         serializer = OrderProductPutSerializers(data=request.data)
-        print(serializer.is_valid())
+        serializer.is_valid()
         set_order = set()
-        try:
-            order = get_object_or_404(self.queryset, pk=pk)
-            set_order.add(order)
-        except OrderProduct.DoesNotExist:
-            return Response({"error": 'order does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        prod = None
+        order = get_object_or_404(self.queryset, pk=pk)
+        set_order.add(order)
         ord = set_order.pop()
-        if order.product:
-            prod = ord.product
-        if serializer.validated_data['quantity'] > ord.quantity:
-            prod.productquantity -= int(serializer.validated_data['quantity'] - ord.quantity)
-            prod.save()
-        if serializer.validated_data['quantity'] < ord.quantity:
-            prod.productquantity += int(ord.quantity - serializer.validated_data['quantity'])
-            prod.save()
-        ord.quantity = serializer.validated_data['quantity']
-        ord.save()
-        return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
+        quantised = serializer.validated_data.get('quantity', '')
+        product = ord.product
+        prod = product.productquantity
+        if quantised:
+            if quantised > ord.quantity:
+                prod -= quantised - ord.quantity
+                product.save()
+            if quantised < ord.quantity:
+                prod += ord.quantity - quantised
+                product.save()
+            ord.quantity = quantised
+            ord.save()
+            return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
+        return Response("mavjud bo'lmagan son kiritdingiz", status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
         return OrderProduct.objects.filter(author=self.request.user)
