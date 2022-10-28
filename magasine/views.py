@@ -57,15 +57,14 @@ class OrderProductViewSet(ModelViewSet):
         set_order.add(order)
         ord = set_order.pop()
         quantised = serializer.validated_data.get('quantity', '')
-        product = ord.product
-        prod = product.productquantity
+        prod = ord.product
         if quantised:
             if quantised > ord.quantity:
-                prod -= quantised - ord.quantity
-                product.save()
+                prod.productquantity -= quantised - ord.quantity
+                prod.save()
             if quantised < ord.quantity:
-                prod += ord.quantity - quantised
-                product.save()
+                prod.productquantity += ord.quantity - quantised
+                prod.save()
             ord.quantity = quantised
             ord.save()
             return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
