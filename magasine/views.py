@@ -41,17 +41,13 @@ class OrderProductViewSet(ModelViewSet):
         serializer = OrderProductPostSerializers(data=request.data)
         product = Product.objects.get(id=request.data['product'])
         orderproduct = Product.objects.get(id=request.data['product'])
-
-        if int(self.request.data['quantity']) > 0:
-            if product.productquantity < int(request.data['quantity']):
-                return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
-            serializer.is_valid(raise_exception=True)
-            product.productquantity -= int(request.data['quantity'])
-            product.save()
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response('mahsulot sonini xato kiritdingiz!')
+        if product.productquantity < int(request.data['quantity']):
+            return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        product.productquantity -= int(request.data['quantity'])
+        product.save()
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None, *args, **kwargs):
         serializer = OrderProductPutSerializers(data=request.data)

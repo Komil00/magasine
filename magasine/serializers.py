@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from .models import Product, OrderProduct, Category, UserFavoriteProduct
 from customuser.serializers import CustomUserSerializers, CustomUserListSerializer
 
@@ -50,6 +52,11 @@ class OrderProductPostSerializers(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
         fields = ['id', 'author', 'product', 'quantity']
+
+    def validate_quantity(self, value):
+        if value < 1:
+            raise ValidationError("quantity 0 dan kop bolishi kerak")
+        return value
 
 
 class OrderProductPutSerializers(serializers.ModelSerializer):

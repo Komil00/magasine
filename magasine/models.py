@@ -1,12 +1,9 @@
-from django.db.models import F
-
+from django.dispatch import receiver
 from customuser.models import CustomUser
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save
+from django.utils.text import slugify
 
-
-# Create your models here.
 
 class Category(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
@@ -17,6 +14,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     modelname = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='')
     price = models.FloatField()
@@ -36,10 +34,19 @@ class Product(models.Model):
 class OrderProduct(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.FloatField()
 
     def __str__(self):
         return self.product.modelname
+
+
+@receiver(post_save, sender=OrderProduct)
+def create_order(instance, created, *args, **kwargs):
+    if created:
+        product = instance.product
+        if instance.quantity > 0:
+            product.productquantity -= instance.quantity
+            product.save()
 
 
 class UserFavoriteProduct(models.Model):
