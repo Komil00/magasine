@@ -56,19 +56,18 @@ class OrderProductViewSet(ModelViewSet):
         order = get_object_or_404(self.queryset, pk=pk)
         set_order.add(order)
         ord = set_order.pop()
-        quantised = serializer.validated_data.get('quantity', '')
-        prod = ord.product
+        quantised = serializer.validated_data.get('quantity')
+        product = ord.product
         if quantised:
-            if quantised > ord.quantity:
-                prod.productquantity -= quantised - ord.quantity
-                prod.save()
-            if quantised < ord.quantity:
-                prod.productquantity += ord.quantity - quantised
-                prod.save()
+            if quantised >= ord.quantity:
+                product.productquantity -= quantised - ord.quantity
+            else:
+                product.productquantity += ord.quantity - quantised
+            product.save()
             ord.quantity = quantised
             ord.save()
             return Response({"success": "mahsulotingiz soni muvafaqiyatli o'zgartirildi"})
-        return Response("mavjud bo'lmagan son kiritdingiz", status=status.HTTP_400_BAD_REQUEST)
+        return Response("mahsulot sonini to'gri kiriting", status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
         return OrderProduct.objects.filter(author=self.request.user)
