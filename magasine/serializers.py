@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -47,7 +48,6 @@ class OrderProductListSerializers(serializers.ModelSerializer):
 
 
 class OrderProductPostSerializers(serializers.ModelSerializer):
-
     class Meta:
         model = OrderProduct
         fields = ['id', 'author', 'product', 'quantity']
@@ -56,6 +56,9 @@ class OrderProductPostSerializers(serializers.ModelSerializer):
         if value < 1:
             raise ValidationError("quantity 0 dan kop bolishi kerak")
         return value
+
+    def to_representation(self, instance):
+        return model_to_dict(instance)
 
 
 class OrderProductPutSerializers(serializers.ModelSerializer):
