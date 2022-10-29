@@ -1,9 +1,8 @@
-from django.forms import model_to_dict
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Product, OrderProduct, Category, UserFavoriteProduct
-from customuser.serializers import CustomUserSerializers, CustomUserListSerializer
+from customuser.serializers import CustomUserListSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -20,24 +19,6 @@ class ProductListSerializers(serializers.ModelSerializer):
         fields = ['id', 'modelname', 'category', 'image', 'price', 'productquantity', 'mode']
 
 
-# class OrderProductListSerializers(serializers.ModelSerializer):
-#     user = CustomUserListSerializer(read_only=True)
-#     product = ProductListSerializers(read_only=True)
-#     quantity = serializers.FloatField(read_only=True)
-#
-#     class Meta:
-#         model = OrderProduct
-#         fields = ['user', 'product', 'quantity']
-
-
-# class OrderProductPutSerializers(serializers.ModelSerializer):
-#     quantity = serializers.FloatField()
-#
-#     class Meta:
-#         model = OrderProduct
-#         fields = ['quantity']
-
-
 class OrderProductListSerializers(serializers.ModelSerializer):
     author = CustomUserListSerializer(read_only=True)
     product = ProductListSerializers(read_only=True)
@@ -45,6 +26,11 @@ class OrderProductListSerializers(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
         fields = ['id', 'author', 'product', 'quantity']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['totlal'] = instance.product.price * instance.quantity
+        return representation
 
 
 class OrderProductPostSerializers(serializers.ModelSerializer):
@@ -58,7 +44,9 @@ class OrderProductPostSerializers(serializers.ModelSerializer):
         return value
 
     def to_representation(self, instance):
-        return model_to_dict(instance)
+        representation = super().to_representation(instance)
+        representation['totlal'] = instance.product.price * instance.quantity
+        return representation
 
 
 class OrderProductPutSerializers(serializers.ModelSerializer):
