@@ -1,10 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from magasine.models import OrderProduct, UserFavoriteProduct, Product
@@ -37,17 +36,20 @@ class OrderProductViewSet(ModelViewSet):
     authentication_classes = [SessionAuthentication]
     http_allowed_methods = ['get', 'post', 'put', 'delete']
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = OrderProductPostSerializers(data=request.data)
-    #     product = Product.objects.get(id=request.data['product'])
-    #     orderproduct = Product.objects.get(id=request.data['product'])
-    #     if product.productquantity < int(request.data['quantity']):
-    #         return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
-    #     serializer.is_valid(raise_exception=True)
-    #     product.productquantity -= int(request.data['quantity'])
-    #     product.save()
-    #     serializer.save()
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def create(self, request, *args, **kwargs):
+        serializer = OrderProductPostSerializers(data=request.data)
+        product = Product.objects.get(id=request.data['product'])
+        try:
+            orderproduct = int(request.data['quantity'])
+            if product.productquantity < orderproduct:
+                return Response("buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            product.productquantity -= orderproduct
+            product.save()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValueError:
+            return Response('Butun son kiriting', status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None, *args, **kwargs):
         serializer = OrderProductPutSerializers(data=request.data)

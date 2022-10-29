@@ -47,7 +47,6 @@ class OrderProductListSerializers(serializers.ModelSerializer):
 
 
 class OrderProductPostSerializers(serializers.ModelSerializer):
-    quantity = serializers.FloatField()
 
     class Meta:
         model = OrderProduct

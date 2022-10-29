@@ -2,7 +2,6 @@ from django.dispatch import receiver
 from customuser.models import CustomUser
 from django.db import models
 from django.db.models.signals import pre_save, post_save
-from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -18,7 +17,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='')
     price = models.FloatField()
-    productquantity = models.PositiveIntegerField()
+    productquantity = models.IntegerField()
     FOOT_CHOICES = (
         ("mans", "mans"),
         ("vomens", "womens"),
@@ -40,13 +39,12 @@ class OrderProduct(models.Model):
         return self.product.modelname
 
 
-@receiver(post_save, sender=OrderProduct)
-def create_order(instance, created, *args, **kwargs):
-    if created:
-        product = instance.product
-        if instance.quantity > 0:
-            product.productquantity -= instance.quantity
-            product.save()
+# @receiver(post_save, sender=OrderProduct)
+# def create_order(instance, created, *args, **kwargs):
+#     if created:
+#         product = instance.product
+#         product.productquantity -= instance.quantity
+#         product.save()
 
 
 class UserFavoriteProduct(models.Model):
