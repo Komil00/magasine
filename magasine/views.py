@@ -13,7 +13,7 @@ from .serializers import (
     OrderProductPutSerializers, UserFavoriteProductListSerializers, UserFavoriteProductPostSerializers,
     OrderProductPostSerializers, ProductDetailSerializers
 )
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 
 # Create your views here.
