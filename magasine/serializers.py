@@ -12,11 +12,18 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ['id', 'modelname', 'image', 'price']
+
+
+class ProductDetailSerializers(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'modelname', 'category', 'image', 'price', 'productquantity', 'mode']
+        fields = '__all__'
 
 
 class OrderProductListSerializers(serializers.ModelSerializer):

@@ -11,20 +11,21 @@ from .serializers import (
     ProductListSerializers,
     OrderProductListSerializers,
     OrderProductPutSerializers, UserFavoriteProductListSerializers, UserFavoriteProductPostSerializers,
-    OrderProductPostSerializers
+    OrderProductPostSerializers, ProductDetailSerializers
 )
 from rest_framework.viewsets import ViewSet, ModelViewSet
 
 
 # Create your views here.
 
-class ProductViewSet(ViewSet):
+class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
+    http_method_names = ['get']
 
-    def list(self, request):
-        queryset = Product.objects.all()
-        serializer = ProductListSerializers(queryset, many=True)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action in ['list']:
+            return ProductListSerializers
+        return ProductDetailSerializers
 
 
 class OrderProductViewSet(ModelViewSet):
