@@ -17,7 +17,6 @@ class CategoryModelAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ['modelname', 'category', 'price', 'image_tag']
-    fields = ['modelname', 'category', 'price', 'image']
     list_display_links = list_display
     search_fields = ('modelname',)
 
@@ -30,7 +29,6 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 @admin.register(OrderProduct)
 class OrderProductModelAdmin(admin.ModelAdmin):
-    fields = ['author', 'product', 'quantity']
     list_display = ['product', 'author', 'quantity', 'image_tag']
     list_display_links = list_display
     search_fields = ('product__modelname',)
