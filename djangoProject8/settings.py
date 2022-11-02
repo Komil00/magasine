@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-ka3$ed_q^liye-$3$7&ovt2fih01!mfvq+4yd-wa!y*#(zfip-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -54,9 +54,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = ['*']
-CORS_ORIGIN_WHITELIST = ('http://localhost:5000',)
 
 ROOT_URLCONF = 'djangoProject8.urls'
 
