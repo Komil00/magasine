@@ -12,10 +12,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializers(serializers.ModelSerializer):
-
     class Meta:
         model = Product
         fields = ['id', 'modelname', 'image', 'price']
+
+
+class ChangePriceSerializer(serializers.Serializer):
+    price = serializers.FloatField(required=True)
 
 
 class ProductDetailSerializers(serializers.ModelSerializer):

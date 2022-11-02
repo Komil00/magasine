@@ -1,6 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +13,7 @@ from .serializers import (
     ProductListSerializers,
     OrderProductListSerializers,
     OrderProductPutSerializers, UserFavoriteProductListSerializers, UserFavoriteProductPostSerializers,
-    OrderProductPostSerializers, ProductDetailSerializers
+    OrderProductPostSerializers, ProductDetailSerializers, ChangePriceSerializer
 )
 from rest_framework.viewsets import ModelViewSet
 
@@ -21,11 +23,27 @@ from rest_framework.viewsets import ModelViewSet
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     http_method_names = ['get']
+    serializer_class = ProductListSerializers
 
     def get_serializer_class(self):
         if self.action in ['list']:
             return ProductListSerializers
+        # if self.action == 'change_price':
+        #     return ChangePriceSerializer
         return ProductDetailSerializers
+
+    # @action(detail=True, methods=['put'])
+    # def change_price(self, request, pk):
+    #     print(request.POST['price'])
+    #     print(request)
+    #     try:
+    #         query = self.queryset.get(id=pk)
+    #         query.price = request.POST['price']
+    #         query.save()
+    #
+    #     except self.queryset.DoesNotExist:
+    #         return Response('not found', status=400)
+    #     return Response('success')
 
 
 class OrderProductViewSet(ModelViewSet):
