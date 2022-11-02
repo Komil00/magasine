@@ -28,22 +28,7 @@ class ProductViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['list']:
             return ProductListSerializers
-        # if self.action == 'change_price':
-        #     return ChangePriceSerializer
         return ProductDetailSerializers
-
-    # @action(detail=True, methods=['put'])
-    # def change_price(self, request, pk):
-    #     print(request.POST['price'])
-    #     print(request)
-    #     try:
-    #         query = self.queryset.get(id=pk)
-    #         query.price = request.POST['price']
-    #         query.save()
-    #
-    #     except self.queryset.DoesNotExist:
-    #         return Response('not found', status=400)
-    #     return Response('success')
 
 
 class OrderProductViewSet(ModelViewSet):
@@ -99,6 +84,19 @@ class OrderProductViewSet(ModelViewSet):
         if self.action in ['create']:
             return OrderProductPostSerializers
         return OrderProductPutSerializers
+
+    # @action(detail=True, methods=['put'])
+    # def change_price(self, request, pk):
+    #     print(request.POST['price'])
+    #     print(request)
+    #     try:
+    #         query = self.queryset.get(id=pk)
+    #         query.price = request.POST['price']
+    #         query.save()
+    #
+    #     except self.queryset.DoesNotExist:
+    #         return Response('not found', status=400)
+    #     return Response('success')
 
 
 class UserFavoriteProductViewSet(ModelViewSet):
