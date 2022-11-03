@@ -32,11 +32,6 @@ class AuthorOrReadOnly(permissions.BasePermission):
     #     return False
 
 
-class UsersViewCreate(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializers
-
-
 class UsersViewList(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

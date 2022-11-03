@@ -66,7 +66,7 @@ class OrderProductViewSet(ModelViewSet):
         if quantised:
             if quantised >= ord.quantity:
                 if product.productquantity < quantised - ord.quantity:
-                    return Response("do'konda buncha manhsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
+                    return Response("do'konda buncha mahsulot yo'q", status=status.HTTP_400_BAD_REQUEST)
                 product.productquantity -= quantised - ord.quantity
             else:
                 product.productquantity += ord.quantity - quantised

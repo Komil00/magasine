@@ -13,7 +13,6 @@ class Category(models.Model):
 
 class Product(models.Model):
     modelname = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='')
     price = models.FloatField()
