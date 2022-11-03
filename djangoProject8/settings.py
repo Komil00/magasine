@@ -160,7 +160,7 @@ REST_FRAMEWORK = {
 
 
 }
-
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
@@ -174,5 +174,6 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'customuser.serializers.CustomUserSerializers',
         'user': 'customuser.serializers.CustomUserSerializers',
+
     },
 }
