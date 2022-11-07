@@ -79,6 +79,7 @@ class OrderProductViewSet(ModelViewSet):
     def get_queryset(self):
         return OrderProduct.objects.filter(author=self.request.user)
 
+    #
     def get_serializer_class(self):
         if self.action in ['list']:
             return OrderProductListSerializers

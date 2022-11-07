@@ -1,4 +1,6 @@
 from django.dispatch import receiver
+from django.template.defaultfilters import slugify
+
 from customuser.models import CustomUser
 from django.db import models
 from django.db.models.signals import pre_save, post_save
@@ -13,6 +15,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     modelname = models.CharField(max_length=50)
+    slug = models.SlugField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='')
     price = models.FloatField()
@@ -27,6 +30,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.modelname
+
+
+# @receiver(pre_save, sender=Product)
+# def product_pre_save(sender, instance, *args, **kwargs):
+#     if not instance.slug:
+#         instance.slug = slugify(instance.modelname)
+
+
+# @receiver(post_save, sender=Product)
+# def product_post_save(sender, instance, created, *args, **kwargs):
+#     if not instance.slug:
+#         instance.slug = slugify(instance.modelname)
+#         instance.save()
 
 
 class OrderProduct(models.Model):
