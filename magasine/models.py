@@ -31,6 +31,10 @@ class Product(models.Model):
     def __str__(self):
         return self.modelname
 
+    # @classmethod
+    # def index(cls):
+    #     return cls.objects.filter(modelname='qwe')
+
 
 # @receiver(pre_save, sender=Product)
 # def product_pre_save(sender, instance, *args, **kwargs):

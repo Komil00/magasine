@@ -39,7 +39,7 @@ class OrderProductListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['totlal'] = instance.product.price * instance.quantity
+        representation['total_price'] = instance.product.price * instance.quantity
         return representation
 
 
@@ -55,7 +55,7 @@ class OrderProductPostSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['totlal'] = instance.product.price * instance.quantity
+        representation['total_price'] = instance.product.price * instance.quantity
         return representation
 
 
