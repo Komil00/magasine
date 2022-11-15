@@ -17,7 +17,6 @@ class Product(models.Model):
     modelname = models.CharField(max_length=50)
     slug = models.SlugField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='')
     price = models.FloatField()
     productquantity = models.IntegerField()
     FOOT_CHOICES = (
@@ -31,9 +30,10 @@ class Product(models.Model):
     def __str__(self):
         return self.modelname
 
-    # @classmethod
-    # def index(cls):
-    #     return cls.objects.filter(modelname='qwe')
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='image')
 
 
 # @receiver(pre_save, sender=Product)
